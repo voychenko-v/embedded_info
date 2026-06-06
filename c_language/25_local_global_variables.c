@@ -42,13 +42,41 @@
     4. Приклад використання:
        - Локальна змінна "a" в main() не доступна поза main().
        - Глобальна змінна "counter" доступна з будь-якої функції у файлі.
+
+    5. Ключові слова static та extern:
+       - static на рівні файлу (file scope) дає внутрішню лінковість (internal linkage):
+         змінна видима тільки в поточному файлі (translation unit).
+       - static в блоці ({ ... }) дає статичну тривалість життя, але область видимості
+         локальна для цього блоку. Значення зберігається між викликами.
+       - extern декларує змінну з зовнішньою лінковістю (external linkage):
+         вона може бути визначена в іншому файлі або пізніше в тому ж файлі.
+       - Технічно всі глобальні змінні за замовчуванням мають extern-лінковість, якщо не
+         використано static.
+       - Приклад:
+           static int internal_counter = 0;   // visible only within this file
+           extern int shared_counter;         // declared here, defined elsewhere
+
+    5.1. Приклад використання extern:
+       - Якщо змінна визначена в іншому файлі, то в поточному файлі її можна оголосити
+         як extern, щоб використовувати її.
+       - Якщо змінна визначена в цьому файлі, extern може бути використаний як явна
+         декларація до визначення.
 */
 
-int counter = 0;          // Глобальна змінна
+static int static_counter = 0;  // Файлова змінна зі static: видна лише в цьому файлі
+int external_counter = 0;       // Глобальна змінна з зовнішньою лінковістю
+int counter = 0;                // Глобальна змінна
 
 void increment_counter(void)
 {
     counter++;             // Доступ до глобальної змінної з будь-якої функції
+}
+
+void increment_all_counters(void)
+{
+    counter++;             // глобальний лічильник, доступний у всіх функціях цього файлу і з інших файлів через extern
+    static_counter++;      // зберігає значення між викликами, видимий тільки в цьому файлі
+    external_counter++;    // доступний з інших файлів через extern
 }
 
 int sum(int x, int y)
@@ -68,6 +96,12 @@ int main(void)
     increment_counter();
 
     printf("Global counter after calls = %d\n", counter);
+
+    increment_all_counters();
+    increment_all_counters();
+    printf("Global counter after increment_all_counters = %d\n", counter);
+    printf("Static counter after increment_all_counters = %d\n", static_counter);
+    printf("External counter after increment_all_counters = %d\n", external_counter);
 
     int total = sum(a, b);
     printf("Sum %d + %d = %d\n", a, b, total);
