@@ -43,7 +43,7 @@ int main(void) {
 
     // Тепер відкриваємо файл для читання
     char buffer[100];
-    fp = fopen("func.txt", "r");
+    fp = fopen("func.txt", "r");  // Якщо змінюєш вже оголошену змінну — присвоєння, тому без FILE
     if (fp == NULL) {
         printf("Error opening file for reading\n");
         return 1;
