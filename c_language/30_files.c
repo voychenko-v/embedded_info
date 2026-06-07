@@ -31,12 +31,28 @@ int main(void) {
 
     FILE *fp = fopen("func.txt", "w");
     if (fp == NULL) {
+        
         return 1;
     }
 
     // Записуємо рядок у файл
     for (int i = 0; i < str[i]; ++i)
         fputc(str[i], fp);
+
+    fclose(fp);
+
+    // Тепер відкриваємо файл для читання
+    char buffer[100];
+    fp = fopen("func.txt", "r");
+    if (fp == NULL) {
+        printf("Error opening file for reading\n");
+        return 1;
+    }
+
+    // Читаємо рядок з файлу
+    if (fgets(buffer, sizeof(buffer), fp) != NULL) {
+        printf("Read from file: %s", buffer);
+    }
 
     fclose(fp);
 
